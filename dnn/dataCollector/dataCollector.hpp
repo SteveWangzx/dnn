@@ -130,6 +130,7 @@ public:
 	void peak_norm();
 	//void generate_norm();
 	void mean_normalization();
+	data get_row(size_t row);
 
 private:
 	void dataHandler(std::vector<std::string>& words);
@@ -233,10 +234,10 @@ void dataCollector::peak_norm()
 //									---- Çø¼ä£º	[-1, 1]
 void dataCollector::mean_normalization()
 {
-	int size = samples.size();
+	size_t size = samples.size();
 	auto begin = samples.begin();
 
-	for (int i = 0; i < X_SIZE; ++i)
+	for (size_t i = 0; i < X_SIZE; ++i)
 	{
 		float min = x_norm[i].min;
 		float max = x_norm[i].max;
@@ -250,6 +251,14 @@ void dataCollector::mean_normalization()
 			(*samples_idx).x[i] = output;
 		}
 	}
+}
+
+data dataCollector::get_row(size_t row)
+{
+	data result;
+	result = samples.at(row);
+
+	return result;
 }
 
 #endif

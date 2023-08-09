@@ -130,7 +130,9 @@
     <ClCompile Include="dnn.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dateCollector\dataCollector.hpp" />
+    <ClInclude Include="dataCollector\dataCollector.hpp" />
+    <ClInclude Include="fcLayer.hpp" />
+    <ClInclude Include="nueral.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

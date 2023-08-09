@@ -16,6 +16,12 @@
     <Filter Include="dataCollector">
       <UniqueIdentifier>{7a4bf3f7-2310-40b9-8c54-be833e7a1e88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="nueral">
+      <UniqueIdentifier>{f7c9f4d2-491f-4740-a711-f65bea06556c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fcLayer">
+      <UniqueIdentifier>{29737f39-f8ee-4286-8d7c-761192e50167}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dnn.cpp">
@@ -23,8 +29,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dateCollector\dataCollector.hpp">
+    <ClInclude Include="dataCollector\dataCollector.hpp">
       <Filter>dataCollector</Filter>
+    </ClInclude>
+    <ClInclude Include="nueral.hpp">
+      <Filter>nueral</Filter>
+    </ClInclude>
+    <ClInclude Include="fcLayer.hpp">
+      <Filter>fcLayer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
