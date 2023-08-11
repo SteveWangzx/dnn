@@ -1,13 +1,19 @@
 #ifndef _full_connected_layer__
 #define _full_connected_layer__
 
+/**********************************
+* Header for Neural Network layer *
+**********************************/
+
 class fcLayer
 {
 public:
-	fcLayer() {};
+	fcLayer() : size(0) {};
 	fcLayer(int num);
-	float* generate_output();
+	//float* generate_output();
 	size_t getSize() { return size; }
+	std::vector<float> backCompute(float loss);
+	std::vector<std::vector<float>> backCompute(std::vector<std::vector<float>> loss);
 
 	// activation function
 	void sigmoid();
@@ -16,13 +22,44 @@ public:
 	std::vector<neural> neurals;
 
 private:
-	size_t size;
+	size_t size = 0;
 };
 
 fcLayer::fcLayer(const int num) {
 	std::vector<neural> temp(num);
 	neurals = temp;
 	size = neurals.size();
+}
+
+// 单神经元输出层使用的反向传播函数
+std::vector<float> fcLayer::backCompute(float loss)
+{
+	std::vector<float> results;
+	for (size_t i = 0; i < size; ++i)
+	{
+		results = neurals[i].back_compute(loss);
+	}
+
+	return results;
+}
+
+// 全连接层使用的反向传播函数
+std::vector<std::vector<float>> fcLayer::backCompute(std::vector<std::vector<float>> loss)
+{
+	std::vector<std::vector<float>> results;
+	for (size_t i = 0; i < size; ++i)
+	{
+		float currLoss = 0;
+		for (int m = 0; m < loss.size(); ++m)
+		{
+			currLoss += loss[m][i];
+		}
+
+		std::vector<float> res = neurals[i].back_compute(currLoss);
+		results.push_back(res);
+	}
+
+	return results;
 }
 
 // 激活函数：sigmoid	---- sigmoid(y) = 1 / (1 + e^y)
@@ -32,7 +69,7 @@ void fcLayer::sigmoid()
 	{
 		float tmp = neurals.at(i).getOutput();
 
-		tmp = 1 / (1 + exp(tmp));
+		tmp = 1 / (1 + exp(-tmp));
 		neurals.at(i).setOutput(tmp);
 	}
 }
@@ -45,6 +82,10 @@ void fcLayer::relu()
 		if (neurals.at(i).getOutput() <= 0)
 		{
 			neurals.at(i).setOutput(0);
+		}
+		else
+		{
+			neurals.at(i).setOutput(1);
 		}
 	}
 }

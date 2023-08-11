@@ -22,6 +22,9 @@
     <Filter Include="fcLayer">
       <UniqueIdentifier>{29737f39-f8ee-4286-8d7c-761192e50167}</UniqueIdentifier>
     </Filter>
+    <Filter Include="graph">
+      <UniqueIdentifier>{283aadd5-aa31-4a35-a379-6c69d2301502}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dnn.cpp">
@@ -37,6 +40,9 @@
     </ClInclude>
     <ClInclude Include="fcLayer.hpp">
       <Filter>fcLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="graph.hpp">
+      <Filter>graph</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

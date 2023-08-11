@@ -131,6 +131,7 @@ public:
 	//void generate_norm();
 	void mean_normalization();
 	data get_row(size_t row);
+	void shuffle();
 
 private:
 	void dataHandler(std::vector<std::string>& words);
@@ -260,5 +261,13 @@ data dataCollector::get_row(size_t row)
 
 	return result;
 }
+
+// shuffle()
+// 随机打乱样本
+//void dataCollector::shuffle()
+//{
+//	srand((unsigned int)time(0));
+//	std::random_shuffle(samples.begin(), samples.begin(), srand);
+//}
 
 #endif
