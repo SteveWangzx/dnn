@@ -131,9 +131,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dataCollector\dataCollector.hpp" />
-    <ClInclude Include="fcLayer.hpp" />
-    <ClInclude Include="graph.hpp" />
-    <ClInclude Include="nueral.hpp" />
+    <ClInclude Include="fclayer\fcLayer.hpp" />
+    <ClInclude Include="graph\graph.hpp" />
+    <ClInclude Include="neural\neural.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

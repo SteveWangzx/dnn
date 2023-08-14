@@ -4,12 +4,13 @@
 /**********************************
 * Header for Neural Network layer *
 **********************************/
+#include "../neural/neural.hpp"
 
 class fcLayer
 {
 public:
 	fcLayer() : size(0) {};
-	fcLayer(int num);
+	fcLayer(int num, Actv actv);
 	//float* generate_output();
 	size_t getSize() { return size; }
 	std::vector<float> backCompute(float loss);
@@ -23,9 +24,11 @@ public:
 
 private:
 	size_t size = 0;
+	Actv mode;
 };
 
-fcLayer::fcLayer(const int num) {
+fcLayer::fcLayer(const int num, Actv actv) {
+	mode = actv;
 	std::vector<neural> temp(num);
 	neurals = temp;
 	size = neurals.size();
@@ -37,7 +40,7 @@ std::vector<float> fcLayer::backCompute(float loss)
 	std::vector<float> results;
 	for (size_t i = 0; i < size; ++i)
 	{
-		results = neurals[i].back_compute(loss);
+		results = neurals[i].back_compute(loss, mode);
 	}
 
 	return results;
@@ -55,7 +58,7 @@ std::vector<std::vector<float>> fcLayer::backCompute(std::vector<std::vector<flo
 			currLoss += loss[m][i];
 		}
 
-		std::vector<float> res = neurals[i].back_compute(currLoss);
+		std::vector<float> res = neurals[i].back_compute(currLoss, mode);
 		results.push_back(res);
 	}
 
@@ -82,10 +85,6 @@ void fcLayer::relu()
 		if (neurals.at(i).getOutput() <= 0)
 		{
 			neurals.at(i).setOutput(0);
-		}
-		else
-		{
-			neurals.at(i).setOutput(1);
 		}
 	}
 }

@@ -5,6 +5,8 @@
 * Header for Neural Network Graph (Structure) *
 **********************************************/
 
+#include "../neural/neural.hpp"
+
 class graph
 {
 public:
@@ -37,13 +39,12 @@ graph::graph(const int num_fc_layers, const int num_fc_nuerals)
 	layer_size = num_fc_layers;
 	neural_size = num_fc_nuerals;
 
-	fcLayer outTemp(1);
+	fcLayer outTemp(1, Actv::SIGMOID);
 	outlayer = outTemp;
 
 	for (size_t i = 0; i < layer_size; ++i)
 	{
-		fcLayer temp(neural_size);
-		fcLayers.push_back(temp);
+		fcLayers.push_back(fcLayer(neural_size, Actv::RELU));
 	}
 }
 
@@ -94,12 +95,14 @@ float graph::forwardCompute()
 				fcLayers[0].neurals[j].input_x(tmp.x, 12);
 				fcLayers[0].neurals[j].linear_compute();
 			}
-			fcLayers[0].relu();
+ 			fcLayers[0].relu();
+			//std::cout << "第一层: ";
 			for (size_t j = 0; j < neural_size; ++j)
 			{
-				//std::cout << "curr: " << currOutput[j] << std::endl;
+				//std::cout << fcLayers[0].neurals[j].getOutput() << " ";
 				currOutput.push_back(fcLayers[0].neurals[j].getOutput());
 			}
+			//std::cout << std::endl;
 
 			// 计算后续层
 			for (size_t j = 1; j < layer_size; ++j)
@@ -112,18 +115,24 @@ float graph::forwardCompute()
 				}
 				fcLayers[j].relu();
 
+				//std::cout << "第" << j << "层： ";
 				for (size_t l = 0; l < neural_size; ++l)
 				{
+					//std::cout << fcLayers[j].neurals[l].getOutput() << " ";
 					currOutput[l] = fcLayers[j].neurals[l].getOutput();
 				}
+				//std::cout << std::endl;
 			}
 			outlayer.neurals[0].input_x(currOutput, neural_size);
 			outlayer.neurals[0].linear_compute();
 			outlayer.sigmoid();
 
+			//std::cout << "Dnn output: " << outlayer.neurals[0].getOutput() << std::endl;
 			outputDnn = outlayer.neurals[0].getOutput();
 			currLoss = tmp.label - outputDnn;
 			lossSum += fabs(currLoss);
+			//std::cout << "Loss: " << lossSum / (i + 1) << std::endl;
+
 
 			backcompute(currLoss);
 

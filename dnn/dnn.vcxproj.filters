@@ -35,14 +35,14 @@
     <ClInclude Include="dataCollector\dataCollector.hpp">
       <Filter>dataCollector</Filter>
     </ClInclude>
-    <ClInclude Include="nueral.hpp">
-      <Filter>nueral</Filter>
+    <ClInclude Include="fclayer\fcLayer.hpp">
+      <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="fcLayer.hpp">
-      <Filter>fcLayer</Filter>
+    <ClInclude Include="graph\graph.hpp">
+      <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="graph.hpp">
-      <Filter>graph</Filter>
+    <ClInclude Include="neural\neural.hpp">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

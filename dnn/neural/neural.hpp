@@ -1,13 +1,18 @@
 #ifndef _neural_hpp__
-#define _nueral_hpp__
+#define _neural_hpp__
 
 /********************
 * Header for nueral *
 ********************/
 
-const float LEARNING_RATE = 0.1f;
+extern enum class Actv {
+	RELU,
+	SIGMOID
+};
+
+const float LEARNING_RATE = 0.001f;
 const float INIT_WEIGHT = 0.5f;
-const float INIT_BIAS = 0.1f;
+const float INIT_BIAS = 0;
 
 class neural
 {
@@ -34,7 +39,7 @@ public:
 	float getOutput() { return output; }
 	void setOutput(float updateOutput) { output = updateOutput; }
 	std::vector<float> back_compute(float loss);
-	std::vector<float> back_compute(std::vector<float> loss);
+	std::vector<float> back_compute(float loss, Actv mode);
 	size_t getSize() { return x_size; }
 	std::vector<float> weights;
 	float bias;
@@ -50,6 +55,9 @@ private:
 // @brief: pass input to a default constructed nueral
 void neural::input_x(float x[], size_t size)
 {
+	std::random_device rd_neu;
+	std::default_random_engine eng_neu(rd_neu());
+	std::uniform_real_distribution<float> u_neu(-0.5f, 0.5f);
 	input.clear();
 	x_size = size;
 	for (size_t i = 0; i < size; ++i)
@@ -60,7 +68,7 @@ void neural::input_x(float x[], size_t size)
 	{
 		for (size_t i = 0; i < size; ++i)
 		{
-				weights.push_back(INIT_WEIGHT);
+				weights.push_back(u_neu(eng_neu));
 		}
 	}
 }
@@ -68,6 +76,9 @@ void neural::input_x(float x[], size_t size)
 // input_x(std::vector<float>& x, size_t size) жиди
 void neural::input_x(std::vector<float>& x, size_t size)
 {
+	std::random_device rd_neu;
+	std::default_random_engine eng_neu(rd_neu());
+	std::uniform_real_distribution<float> u_neu(-0.5f, 0.5f);
 	input.clear();
 	for (size_t i = 0; i < size; ++i)
 	{
@@ -79,7 +90,7 @@ void neural::input_x(std::vector<float>& x, size_t size)
 	{
 		for (size_t i = 0; i < size; ++i)
 		{
-			weights.push_back(INIT_WEIGHT);
+			weights.push_back(u_neu(eng_neu));
 		}
 	}
 	x_size = size;
@@ -119,7 +130,7 @@ void neural::linear_compute()
 //					----				   = sigmoid(w * x + b) * (1 - sigmoid(w * x + b))
 std::vector<float> neural::back_compute(float loss)
 {
-	float sigmoid_wxb = (1 / (1 + exp(-linear_output))) * (1 - (1 / (1 + exp(-linear_output))));
+	float dy = output * (1.0f - output);
 	std::vector<float> dx;
 
 	// dx = w * loss
@@ -131,14 +142,67 @@ std::vector<float> neural::back_compute(float loss)
 	// dw ---- update on weights
 	for (int i = 0; i < x_size; ++i)
 	{
-		weights[i] += input[i] * sigmoid_wxb * loss * LEARNING_RATE;
+		weights[i] += input[i] * dy * loss * LEARNING_RATE;
 	}
 
 	// db ---- update on bias
-	bias += sigmoid_wxb * loss * LEARNING_RATE;
+	bias += dy * loss * LEARNING_RATE;
 
 	return dx;
 }
+
+std::vector<float> neural::back_compute(float loss, Actv mode)
+{
+	float dy = 0;
+	std::vector<float> dx;
+
+	switch (mode)
+	{
+	case Actv::RELU: 
+	{
+		//std::cout << "RELU" << std::endl;
+		if (output > 0)
+		{
+			dy = 1.0f;
+		}
+		else
+		{
+			dy = 0.0f;
+		}
+	}
+		break;
+	case Actv::SIGMOID:
+	{
+		//std::cout << "SIGMOID" << std::endl;
+		dy = output * (1 - output);
+	}
+		break;
+	default:
+		break;
+	}
+
+	// dx = w * loss
+	for (int i = 0; i < x_size; ++i)
+	{
+		dx.push_back(weights[i] * loss);
+	}
+
+	// dw ---- update on weights
+	for (int i = 0; i < x_size; ++i)
+	{
+		weights[i] += input[i] * dy * loss * LEARNING_RATE;
+	}
+
+	// db ---- update on bias
+	bias += dy * LEARNING_RATE;
+
+	return dx;
+}
+
+//std::vector<float> neural::back_compute(float loss, Actv mode)
+//{
+//	return std::vector<float>();
+//}
 
 /**********************************
 * print_neural()                  *
