@@ -15,6 +15,7 @@ public:
 	void recieveSample(dataCollector &sample, const int index[],
 		const int batchSize);
 	float forwardCompute();
+	float testSession(data &sample);
 	void backcompute(float loss);
 	void printForwardParam(std::vector<float> &currOutput, const int currlayer);
 
@@ -139,16 +140,62 @@ float graph::forwardCompute()
 	}
 
 	// print out first layer first neurals' weights and bias
-	std::cout << "Weights:" << std::endl;
-	for (int m = 0; m < fcLayers[1].neurals[0].getSize(); ++m)
-	{
-		std::cout << fcLayers[1].neurals[0].weights[m] << " ";
-	}
-	std::cout << std::endl;
-	std::cout << "Bias:" << fcLayers[1].neurals[0].bias << std::endl;
+	//std::cout << "Weights:" << std::endl;
+	//for (auto weight: outlayer.neurals[0].weights)
+	//{
+	//	std::cout << weight << " ";
+	//}
+	//std::cout << std::endl;
+	//std::cout << "Bias:" << outlayer.neurals[0].bias << std::endl;
 
 	// return batch average loss
 	return lossSum / size;
+}
+
+// To test a single sample without back propagation
+float graph::testSession(data& sample)
+{
+	std::vector<float> currOutput;
+
+	// 输入并计算第一层
+	for (size_t j = 0; j < neural_size; ++j)
+	{
+		fcLayers[0].neurals[j].input_x(sample.x, 12);
+		fcLayers[0].neurals[j].linear_compute();
+	}
+	fcLayers[0].relu();
+	//std::cout << "第一层: ";
+	for (size_t j = 0; j < neural_size; ++j)
+	{
+		//std::cout << fcLayers[0].neurals[j].getOutput() << " ";
+		currOutput.push_back(fcLayers[0].neurals[j].getOutput());
+	}
+	//std::cout << std::endl;
+
+	// 计算后续层
+	for (size_t j = 1; j < layer_size; ++j)
+	{
+
+		for (size_t k = 0; k < neural_size; ++k)
+		{
+			fcLayers[j].neurals[k].input_x(currOutput, neural_size);
+			fcLayers[j].neurals[k].linear_compute();
+		}
+		fcLayers[j].relu();
+
+		//std::cout << "第" << j << "层： ";
+		for (size_t l = 0; l < neural_size; ++l)
+		{
+			//std::cout << fcLayers[j].neurals[l].getOutput() << " ";
+			currOutput[l] = fcLayers[j].neurals[l].getOutput();
+		}
+		//std::cout << std::endl;
+	}
+	outlayer.neurals[0].input_x(currOutput, neural_size);
+	outlayer.neurals[0].linear_compute();
+	outlayer.sigmoid();
+
+	return outlayer.neurals[0].getOutput();
 }
 
 void graph::backcompute(float loss)

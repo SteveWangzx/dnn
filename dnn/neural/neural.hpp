@@ -10,9 +10,9 @@ extern enum class Actv {
 	SIGMOID
 };
 
-const float LEARNING_RATE = 0.001f;
-const float INIT_WEIGHT = 0.5f;
+const float LEARNING_RATE = 0.005f;
 const float INIT_BIAS = 0;
+const float Momenteum = 0.9f;
 
 class neural
 {
@@ -23,13 +23,6 @@ public:
 		for (size_t i = 0; i < x_size; ++i)
 		{
 			input.push_back(x[i]);
-		}
-		if (weights.empty())
-		{
-			for (size_t i = 0; i < size; ++i)
-			{
-				weights.push_back(INIT_WEIGHT);
-			}
 		}
 	};
 	void input_x(float x[], size_t size);
@@ -104,6 +97,7 @@ void neural::input_x(std::vector<float>& x, size_t size)
 void neural::linear_compute()
 {
 	output = 0;
+	linear_output = 0;
 	for (int i = 0; i < x_size; ++i)
 	{
 		//std::cout << "weights" << weights[i] << std::endl;
@@ -128,29 +122,6 @@ void neural::linear_compute()
 //					---- d(sigmoid) / d(b) = sigmoid' * (w * x + b)'
 //					----				   = sigmoid'(w * x + b) * 1
 //					----				   = sigmoid(w * x + b) * (1 - sigmoid(w * x + b))
-std::vector<float> neural::back_compute(float loss)
-{
-	float dy = output * (1.0f - output);
-	std::vector<float> dx;
-
-	// dx = w * loss
-	for (int i = 0; i < x_size; ++i)
-	{
-		dx.push_back(weights[i] * loss);
-	}
-
-	// dw ---- update on weights
-	for (int i = 0; i < x_size; ++i)
-	{
-		weights[i] += input[i] * dy * loss * LEARNING_RATE;
-	}
-
-	// db ---- update on bias
-	bias += dy * loss * LEARNING_RATE;
-
-	return dx;
-}
-
 std::vector<float> neural::back_compute(float loss, Actv mode)
 {
 	float dy = 0;
@@ -181,22 +152,25 @@ std::vector<float> neural::back_compute(float loss, Actv mode)
 		break;
 	}
 
+	float dactv = dy * loss;
+
 	// dx = w * loss
 	for (int i = 0; i < x_size; ++i)
 	{
-		dx.push_back(weights[i] * loss);
+		dx.push_back(weights[i] * dactv);
 	}
 
 	// dw ---- update on weights
 	for (int i = 0; i < x_size; ++i)
 	{
-		weights[i] += input[i] * dy * loss * LEARNING_RATE;
+		weights[i] += input[i] * dactv * LEARNING_RATE;
 	}
 
 	// db ---- update on bias
-	bias += dy * LEARNING_RATE;
+	bias += 1.0f * dactv * LEARNING_RATE;
 
 	return dx;
+
 }
 
 //std::vector<float> neural::back_compute(float loss, Actv mode)

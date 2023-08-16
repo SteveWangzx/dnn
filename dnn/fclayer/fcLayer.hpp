@@ -72,7 +72,7 @@ void fcLayer::sigmoid()
 	{
 		float tmp = neurals.at(i).getOutput();
 
-		tmp = 1 / (1 + exp(-tmp));
+		tmp = 1 / (1 + expf(-tmp));
 		neurals.at(i).setOutput(tmp);
 	}
 }
